@@ -103,9 +103,9 @@ function validateStringNode(schema: JsonSchema, path: ErrorPath, data: unknown):
         return fail(`String length > ${schema.maxLength}`, path, data.length);
     }
     if (schema.pattern) {
-        const pattern = anchorPattern(schema.pattern);
-        if (!pattern.test(data)) {
-            return fail(`String does not match pattern ${pattern}`, path, data);
+        const regExp = new RegExp(schema.pattern);
+        if (!regExp.test(data)) {
+            return fail(`String does not match pattern ${regExp}`, path, data);
         }
     }
     if (schema.format && !isFormatValid(schema.format, data)) {
@@ -172,9 +172,4 @@ function fail(message: string, path: ErrorPath, received?: unknown): ValidationR
 
 function isObject(data: unknown): data is Record<string, unknown> {
     return typeof data === 'object' && data !== null && !Array.isArray(data);
-}
-
-function anchorPattern(pattern: string): RegExp {
-    const anchored = pattern.startsWith('^') && pattern.endsWith('$') ? pattern : `^(?:${pattern})$`;
-    return new RegExp(anchored);
 }

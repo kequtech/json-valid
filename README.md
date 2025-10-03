@@ -1,15 +1,13 @@
 # @kequtech/json-valid
 
-A tiny JSON validator with a pragmatic subset of JSON Schema / OpenAPI 3.1 features.
+A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.1 features.
 **First error wins** (short-circuits on the first mismatch), clear error paths, and a simple API.
 
 * Supports **type unions** (e.g. `['string','null']`, `['object','string']`)
 * Validates **objects, arrays, strings, numbers, integers, booleans, null**
 * Common string **formats** (`uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`)
 * `additionalProperties` as **boolean** or **schema**
-* `pattern` is treated as **anchored** (whole-string match)
 * `enum`/**`const`** with **strict equality**
-* Minimal surface area, no code generation step, no `$ref`/`oneOf`/`allOf`
 
 ---
 
@@ -41,11 +39,12 @@ const User = {
 
 const validateUser = validator(User);
 
-validateUser({ id: 1, email: 'a@b.co' }); // => { ok: true }
-validateUser({ id: 1, email: null });     // => { ok: true }
-
-const r = validateUser({ id: 0, email: 'a@b.co' });
-// r = { ok: false, path: ['id'], message: 'Must be >= 1', received: 0 }
+validateUser({ id: 1, email: 'a@b.co' });
+// { ok: true }
+validateUser({ id: 1, email: null });
+// { ok: true }
+validateUser({ id: 0, email: 'a@b.co' });
+// { ok: false, path: ['id'], message: 'Must be >= 1', received: 0 }
 ```
 
 **First error wins:** validation stops at the first mismatch and returns that error, including the JSON path to the offending value.
@@ -105,7 +104,7 @@ interface JsonSchema {
   // Strings
   minLength?: number;
   maxLength?: number;
-  pattern?: string; // anchored by the validator (whole string)
+  pattern?: string;
   format?: 'uuid' | 'email' | 'uri' | 'hostname' | 'ipv4' | 'ipv6' | 'date-time' | 'date' | 'time';
   not?: { format?: JsonSchema['format'] };
 
@@ -120,6 +119,10 @@ interface JsonSchema {
   const?: JsonSchemaPrimitive;
 }
 ```
+
+### Not supported
+
+`multipleOf`, `minProperties`, `maxProperties`, `propertyNames`, `patternProperties`, `if`,`then`, `else`, `dependentRequired`, `dependentSchemas`, `oneOf`, `allOf`, `anyOf`,`prefixItems`, `contains`, `uniqueItems`, `$ref`.
 
 ### Type unions
 
@@ -145,22 +148,20 @@ interface JsonSchema {
 ### Strings
 
 * `minLength`, `maxLength`, `pattern`
-
-  * `pattern` is **anchored** internally (equivalent to `^(?:pattern)$`)
 * `format` / `not.format`
 
   * Known formats are validated; **unknown formats are ignored** (treated as pass)
 
 Supported formats: `uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`.
 
-Accessible by export if needed: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isIpv4`, `isIpv6`, `isDateTime`, `isDate`, `isTime`.
+Also accessible in exports: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isIpv4`, `isIpv6`, `isDateTime`, `isDate`, `isTime`.
 
 ### `enum` and `const`
 
 * **Strict equality** (no coercion).
 * `enum` and `const` are **primitives only** (`string | number | boolean | null`).
   If you set `const` and the value is object/array, it fails. Use the exact primitive and include it's value as valid `type`.
-* `type: ['string','null']` with `const: 'hello'` **does not** allow `null` — only `'hello'`. Similar with `enum: ['hello', null]` — `null` must be included to allow it.
+* `type: ['string','null']` with `const: 'hello'` **does not** allow `null` — only `'hello'`. Similar with `enum: ['hello', null]` — `null` must be included.
 
 ---
 
@@ -169,7 +170,7 @@ Accessible by export if needed: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isI
 Paths are arrays of keys/indices:
 
 ```ts
-const Schema = {
+const List = {
   type: 'object',
   properties: {
     users: {
@@ -183,13 +184,13 @@ const Schema = {
   },
 };
 
-const validate = validator(Schema);
+const validateList = validator(Schema);
 
-validate({ users: [{ email: 'ok@x.io' }, {}] });
-// -> { ok: false, path: ['users', 1], message: "Missing required property 'email'" }
+validateList({ users: [{ email: 'ok@x.io' }, {}] });
+// { ok: false, path: ['users', 1], message: "Missing required property 'email'" }
 
-validate({ users: [{ email: 'nope' }] });
-// -> { ok: false, path: ['users', 0, 'email'], message: 'Invalid email format' }
+validateList({ users: [{ email: 'nope' }] });
+// { ok: false, path: ['users', 0, 'email'], message: 'Invalid email format' }
 ```
 
 ---
@@ -214,27 +215,27 @@ validateTags({ a: 1 });
 ### Array size and item checks
 
 ```ts
-const validateIntArray = validator({
+const validateIntegerArray = validator({
   type: 'array',
   minItems: 1,
   maxItems: 3,
   items: { type: 'integer' },
 });
 
-validateIntArray([1, 2]);
+validateIntegerArray([1, 2]);
 // { ok: true }
-validateIntArray([]);
+validateIntegerArray([]);
 // { ok: false, path: [], message: 'Expected at least 1 items, got 0', received: 0 }
-validateIntArray([1, 2, 3, 4]);
+validateIntegerArray([1, 2, 3, 4]);
 // { ok: false, path: [], message: 'Expected at most 3 items, got 4', received: 4 }
-validateIntArray([1, 2.5]);
+validateIntegerArray([1, 2.5]);
 // { ok: false, path: [1], message: 'Expected integer', received: 2.5 }
 ```
 
 ### Cross-family union
 
 ```ts
-const validateObjOrString = validator({
+const validateObjectOrString = validator({
   type: ['object','string'],
   // object facet
   properties: { id: { type: 'integer', minimum: 1 } },
@@ -245,13 +246,13 @@ const validateObjOrString = validator({
   pattern: 'ok',
 });
 
-validateObjOrString({ id: 2 });
+validateObjectOrString({ id: 2 });
 // { ok: true }
-validateObjOrString('ok');
+validateObjectOrString('ok');
 // { ok: true }
-validateObjOrString('o');
+validateObjectOrString('o');
 // { ok: false, path: [], message: 'String length < 2', received: 1 }
-validateObjOrString({ id: 0 });
+validateObjectOrString({ id: 0 });
 // { ok: false, path: ['id'], message: 'Must be >= 1', received: 0 }
 ```
 
@@ -260,17 +261,16 @@ validateObjOrString({ id: 0 });
 ## Design choices & notes
 
 * **First error wins**: stops at the first mismatch for speed and clarity.
-* **Anchored patterns**: patterns are whole-string matches by default.
 * **Unknown formats**: treated as pass (open-world; your schema stays portable).
-* **No** `uniqueItems`, `$ref`, `oneOf`, `allOf`, `anyOf` (so far by design).
-* **Enums are primitives only**: if you set `enum` and supply an object/array, it fails.
+* **No** `uniqueItems`, `$ref`, `oneOf`, `allOf`, `anyOf`, etc (so far, by design).
+* **Const/Enum are primitives only**: if you set `enum` and supply an object/array, it fails.
 
 ---
 
 ## Contributing
 
-Issues and PRs welcome. Keep it small, clear, and fast.
-Tests use Node’s built-in runner (`node:test`) and `node:assert`.
+Issues welcome. Keep it small, clear, and fast.
+Tests use Node’s built-in runner `node:test` and `node:assert`.
 
 ```bash
 npm test
