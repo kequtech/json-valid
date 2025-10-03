@@ -1,0 +1,46 @@
+{
+  "name": "@kequtech/json-valid",
+  "description": "JSON validator",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.js"
+    }
+  },
+  "types": "./dist/main.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "test": "node --test",
+    "prepack": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.0",
+    "typescript": "^5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "keywords": [
+    "json",
+    "json-schema",
+    "validator",
+    "openapi",
+    "schema"
+  ],
+  "repository": { "type": "git", "url": "https://github.com/kequtech/json-valid.git" },
+  "bugs": { "url": "https://github.com/kequtech/json-valid/issues" },
+  "homepage": "https://github.com/kequtech/json-valid#readme"
+}
