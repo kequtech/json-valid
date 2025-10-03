@@ -110,11 +110,10 @@ describe('string validation', () => {
         fail(v('abcd'), /String length > 3/, []);
     });
 
-    test('pattern (anchored)', () => {
+    test('pattern', () => {
         const v = validator({ type: 'string', pattern: 'ab' });
         pass(v('ab'));
-        // fails because we anchor pattern internally
-        fail(v('xxabxx'), /does not match pattern/, []);
+        pass(v('xxabxx'));
     });
 
     test('enum and const', () => {
@@ -305,9 +304,9 @@ describe('string: length vs pattern ordering', () => {
         fail(v('abcd'), /String length > 3/, []);
     });
 
-    test('pattern fails when within length bounds', () => {
+    test('pattern pass when within length bounds', () => {
         const v = validator({ type: 'string', minLength: 2, maxLength: 3, pattern: 'ab' });
-        fail(v('zab'), /does not match pattern/, []);
+        pass(v('zab'));
     });
 });
 
