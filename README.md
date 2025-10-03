@@ -263,7 +263,7 @@ validateObjectOrString({ id: 0 });
 * **First error wins**: stops at the first mismatch for speed and clarity.
 * **Unknown formats**: treated as pass (open-world; your schema stays portable).
 * **No** `uniqueItems`, `$ref`, `oneOf`, `allOf`, `anyOf`, etc (so far, by design).
-* **Const/Enum are primitives only**: if you set `enum` and supply an object/array, it fails.
+* **Const/enum are primitives only**: object/array currently not supported.
 
 ---
 
