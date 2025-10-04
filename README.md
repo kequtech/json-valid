@@ -7,7 +7,7 @@ A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.
 * Validates **objects, arrays, strings, numbers, integers, booleans, null**
 * Common string **formats** (`uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`)
 * `additionalProperties` as **boolean** or **schema**
-* `enum`/**`const`** with **strict equality**
+* `enum`/`const` with **strict equality**
 
 ---
 

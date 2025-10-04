@@ -5,14 +5,16 @@
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
-  "exports": "./src/main.ts",
-  "types": "./src/main.ts",
+  "exports": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "files": [
-    "src",
+    "dist",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
+    "clear": "rm -rf dist",
+    "build": "npm run clear && tsc -p tsconfig.build.json && node fix-dts.ts",
     "test": "node --test",
     "prepack": "npm test"
   },

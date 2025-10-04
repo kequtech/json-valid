@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "declarationMap": false,
+    "verbatimModuleSyntax": false,
+
+    "stripInternal": true,
+    "newLine": "lf"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["test", "**/*.test.ts", "**/*.spec.ts"]
+}
