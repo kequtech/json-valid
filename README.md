@@ -16,8 +16,7 @@ A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.
 ```bash
 npm i @kequtech/json-valid
 ```
-
-ESM only.
+ESM only. Node>=22.
 
 ---
 
