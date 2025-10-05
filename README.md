@@ -1,8 +1,8 @@
 # @kequtech/json-valid
 
-A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.1 features.
-**First error wins** (short-circuits on the first mismatch), clear error paths, and a simple API.
+A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.1 features when you don't need everything. **First error wins** (short-circuits on the first mismatch), clear error paths, and a simple API.
 
+* Many types (`object`, `array`, `string`, `number`, `integer`, `boolean`, `null`)
 * Supports **type unions** (e.g. `['string','null']`, `['object','string']`)
 * Validates **objects, arrays, strings, numbers, integers, booleans, null**
 * Common string **formats** (`uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`)
@@ -16,16 +16,16 @@ A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.
 ```bash
 npm i @kequtech/json-valid
 ```
-ESM only. Node>=22.
+ESM only.
 
 ---
 
 ## Quick start
 
 ```ts
-import { validator } from '@kequtech/json-valid';
+import { type JsonSchema, validator } from '@kequtech/json-valid';
 
-const User = {
+const User: JsonSchema = {
   type: 'object',
   required: ['id', 'email'],
   additionalProperties: false,
@@ -71,17 +71,18 @@ type ValidationError = {
 type ValidationResult = ValidationError | { ok: true };
 ```
 
-> Prefer the curried form `validator(schema)(data)` for clarity. If you need a throwing variant, wrap the result and throw on `!ok`.
+> Curried validation logic `validator(schema)(data)`. If you need a throwing variant, wrap the result and throw on `!ok`.
 
 ---
 
 ## Supported schema (subset)
 
-This library uses a single, pragmatic **schema shape** (call it `JsonSchema`) with a `type` that can be a single kind or a union of kinds:
+This library uses a single, pragmatic **schema shape** with a `type` that can be a single kind or a union of kinds:
 
 ```ts
 type JsonSchemaType = 'object' | 'array' | 'string' | 'number' | 'integer' | 'boolean' | 'null';
 type JsonSchemaPrimitive = string | number | boolean | null;
+type StringFormat = 'uuid' | 'email' | 'uri' | 'hostname' | 'ipv4' | 'ipv6' | 'date-time' | 'date' | 'time';
 
 // Accept a single kind or an array of kinds.
 
@@ -104,8 +105,8 @@ interface JsonSchema {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
-  format?: 'uuid' | 'email' | 'uri' | 'hostname' | 'ipv4' | 'ipv6' | 'date-time' | 'date' | 'time';
-  not?: { format?: JsonSchema['format'] };
+  format?: StringFormat;
+  not?: { format?: StringFormat };
 
   // Numbers (applies to 'number' and 'integer')
   minimum?: number;
@@ -134,7 +135,6 @@ interface JsonSchema {
 * `properties` — map of property schemas
 * `required` — list of required property names
 * `additionalProperties`
-
   * `false` → no extras allowed
   * `true`/`undefined` → extras allowed (no type check)
   * **schema** → typed map (extras validated against this schema)
@@ -148,7 +148,6 @@ interface JsonSchema {
 
 * `minLength`, `maxLength`, `pattern`
 * `format` / `not.format`
-
   * Known formats are validated; **unknown formats are ignored** (treated as pass)
 
 Supported formats: `uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`.
@@ -169,7 +168,7 @@ Also accessible in exports: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isIpv4`
 Paths are arrays of keys/indices:
 
 ```ts
-const List = {
+const List: JsonSchema = {
   type: 'object',
   properties: {
     users: {

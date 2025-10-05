@@ -26,7 +26,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=18.17"
   },
   "keywords": [
     "json",
