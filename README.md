@@ -9,12 +9,16 @@ A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.
 * `additionalProperties` as **boolean** or **schema**
 * `enum`/`const` with **strict equality**
 
+---
+
 ## Install
 
 ```bash
 npm i @kequtech/json-valid
 ```
 ESM only.
+
+---
 
 ## Quick start
 
@@ -44,6 +48,8 @@ validateUser({ id: 0, email: 'a@b.co' });
 
 **First error wins:** validation stops at the first mismatch and returns that error, including the JSON path to the offending value.
 
+---
+
 ## API
 
 ### `validator(schema) => (data) => ValidationResult`
@@ -66,6 +72,8 @@ type ValidationResult = ValidationError | { ok: true };
 ```
 
 > Curried validation logic `validator(schema)(data)`. If you need a throwing variant, wrap the result and throw on `!ok`.
+
+---
 
 ## Supported schema (subset)
 
@@ -153,6 +161,8 @@ Also accessible in exports: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isIpv4`
   If you set `const` and the value is object/array, it fails. Use the exact primitive and include it's value as valid `type`.
 * `type: ['string','null']` with `const: 'hello'` **does not** allow `null` — only `'hello'`. Similar with `enum: ['hello', null]` — `null` must be included.
 
+---
+
 ## Error paths
 
 Paths are arrays of keys/indices:
@@ -180,6 +190,8 @@ validateList({ users: [{ email: 'ok@x.io' }, {}] });
 validateList({ users: [{ email: 'nope' }] });
 // { ok: false, path: ['users', 0, 'email'], message: 'Invalid email format' }
 ```
+
+---
 
 ## Examples
 
@@ -242,12 +254,16 @@ validateObjectOrString({ id: 0 });
 // { ok: false, path: ['id'], message: 'Must be >= 1', received: 0 }
 ```
 
+---
+
 ## Design choices & notes
 
 * **First error wins**: stops at the first mismatch for speed and clarity.
 * **Unknown formats**: treated as pass (open-world; your schema stays portable).
 * **No** `uniqueItems`, `$ref`, `oneOf`, `allOf`, `anyOf`, etc (so far, by design).
 * **Const/enum are primitives only**: object/array currently not supported.
+
+---
 
 ## Contributing
 

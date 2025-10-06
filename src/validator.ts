@@ -1,10 +1,8 @@
 import { isFormatValid } from './string-format.ts';
 import type { ErrorPath, JsonSchema, JsonSchemaPrimitive, ValidationResult, Validator } from './types.ts';
 
-const OK: ValidationResult = { ok: true };
-
 export function validator(schema: JsonSchema): Validator {
-    return (data: unknown) => ({ ...validateNode(schema, [], data) });
+    return (data: unknown) => validateNode(schema, [], data);
 }
 
 function validateNode(schema: JsonSchema, path: ErrorPath, data: unknown): ValidationResult {
@@ -32,7 +30,7 @@ function validateNode(schema: JsonSchema, path: ErrorPath, data: unknown): Valid
         case 'string': return validateStringNode(schema, path, data);
         case 'number': return validateNumberNode(schema, path, data);
         case 'boolean': return validateBooleanNode(schema, path, data);
-        default: return OK;
+        default: return { ok: true };
     }
 }
 
@@ -69,7 +67,7 @@ function validateObjectNode(schema: JsonSchema, path: ErrorPath, data: unknown):
         }
     }
 
-    return OK;
+    return { ok: true };
 }
 
 function validateArrayNode(schema: JsonSchema, path: ErrorPath, data: unknown): ValidationResult {
@@ -89,7 +87,7 @@ function validateArrayNode(schema: JsonSchema, path: ErrorPath, data: unknown): 
         }
     }
 
-    return OK;
+    return { ok: true };
 }
 
 function validateStringNode(schema: JsonSchema, path: ErrorPath, data: unknown): ValidationResult {
@@ -115,7 +113,7 @@ function validateStringNode(schema: JsonSchema, path: ErrorPath, data: unknown):
         return fail(`Must not be ${schema.not.format} format`, path, data);
     }
 
-    return OK;
+    return { ok: true };
 }
 
 function validateNumberNode(schema: JsonSchema, path: ErrorPath, data: unknown): ValidationResult {
@@ -138,7 +136,7 @@ function validateNumberNode(schema: JsonSchema, path: ErrorPath, data: unknown):
         return fail(`Must be < ${schema.exclusiveMaximum}`, path, data);
     }
 
-    return OK;
+    return { ok: true };
 }
 
 function validateBooleanNode(_schema: JsonSchema, path: ErrorPath, data: unknown): ValidationResult {
@@ -146,7 +144,7 @@ function validateBooleanNode(_schema: JsonSchema, path: ErrorPath, data: unknown
         return fail('Expected boolean', path, data);
     }
 
-    return OK;
+    return { ok: true };
 }
 
 function getDataKind(value: unknown) {
