@@ -77,10 +77,10 @@ function validateArrayNode(schema: JsonSchema, path: ErrorPath, data: unknown): 
         return fail('Expected array', path, data);
     }
     if (schema.minItems !== undefined && data.length < schema.minItems) {
-        return fail(`Expected at least ${schema.minItems} items, got ${data.length}`, path, data.length);
+        return fail(`Expected at least ${schema.minItems} items`, path, data.length);
     }
     if (schema.maxItems !== undefined && data.length > schema.maxItems) {
-        return fail(`Expected at most ${schema.maxItems} items, got ${data.length}`, path, data.length);
+        return fail(`Expected at most ${schema.maxItems} items`, path, data.length);
     }
     if (schema.items) {
         for (let i = 0; i < data.length; i++) {
@@ -97,10 +97,10 @@ function validateStringNode(schema: JsonSchema, path: ErrorPath, data: unknown):
         return fail('Expected string', path, data);
     }
     if (schema.minLength !== undefined && data.length < schema.minLength) {
-        return fail(`String length < ${schema.minLength}`, path, data.length);
+        return fail(`String length must be >= ${schema.minLength}`, path, data.length);
     }
     if (schema.maxLength !== undefined && data.length > schema.maxLength) {
-        return fail(`String length > ${schema.maxLength}`, path, data.length);
+        return fail(`String length must be <= ${schema.maxLength}`, path, data.length);
     }
     if (schema.pattern) {
         const regExp = new RegExp(schema.pattern);

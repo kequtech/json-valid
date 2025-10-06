@@ -106,8 +106,8 @@ describe('string validation', () => {
     test('minLength / maxLength', () => {
         const v = validator({ type: 'string', minLength: 2, maxLength: 3 });
         pass(v('ab'));
-        fail(v('a'), /String length < 2/, []);
-        fail(v('abcd'), /String length > 3/, []);
+        fail(v('a'), /String length must be >= 2/, []);
+        fail(v('abcd'), /String length must be <= 3/, []);
     });
 
     test('pattern', () => {
@@ -301,7 +301,7 @@ describe('object required with prototype properties', () => {
 describe('string: length vs pattern ordering', () => {
     test('length errors fire before pattern', () => {
         const v = validator({ type: 'string', minLength: 2, maxLength: 3, pattern: 'ab' });
-        fail(v('abcd'), /String length > 3/, []);
+        fail(v('abcd'), /String length must be <= 3/, []);
     });
 
     test('pattern pass when within length bounds', () => {
@@ -399,8 +399,8 @@ describe('pattern only vs length only', () => {
 
     test('length-only errors never mention pattern', () => {
         const v = validator({ type: 'string', minLength: 3, maxLength: 3 });
-        fail(v('xx'), /String length < 3/, []);
-        fail(v('xxxx'), /String length > 3/, []);
+        fail(v('xx'), /String length must be >= 3/, []);
+        fail(v('xxxx'), /String length must be <= 3/, []);
     });
 });
 
@@ -435,7 +435,7 @@ describe('primitive unions: string | number', () => {
         });
 
         pass(v('ok')); // string passes minLength
-        fail(v('x'), /String length < 2/, []); // string fails minLength
+        fail(v('x'), /String length must be >= 2/, []); // string fails minLength
         pass(v(12)); // number passes minimum
         fail(v(5), /Must be >= 10/, []); // number fails minimum
     });
@@ -538,7 +538,7 @@ describe('cross-family union: object | string', () => {
         fail(v({ id: 0 }), /Must be >= 1/, ['id']); // object check fires
         // string branch
         pass(v('ok'));
-        fail(v('o'), /String length < 2/, []); // string check fires
+        fail(v('o'), /String length must be >= 2/, []); // string check fires
         fail(v('zz'), /does not match pattern/, []); // pattern applies
     });
 });

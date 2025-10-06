@@ -9,16 +9,12 @@ A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.
 * `additionalProperties` as **boolean** or **schema**
 * `enum`/`const` with **strict equality**
 
----
-
 ## Install
 
 ```bash
 npm i @kequtech/json-valid
 ```
 ESM only.
-
----
 
 ## Quick start
 
@@ -48,8 +44,6 @@ validateUser({ id: 0, email: 'a@b.co' });
 
 **First error wins:** validation stops at the first mismatch and returns that error, including the JSON path to the offending value.
 
----
-
 ## API
 
 ### `validator(schema) => (data) => ValidationResult`
@@ -72,8 +66,6 @@ type ValidationResult = ValidationError | { ok: true };
 ```
 
 > Curried validation logic `validator(schema)(data)`. If you need a throwing variant, wrap the result and throw on `!ok`.
-
----
 
 ## Supported schema (subset)
 
@@ -161,8 +153,6 @@ Also accessible in exports: `isUuid`, `isEmail`, `isUri`, `isHostname`, `isIpv4`
   If you set `const` and the value is object/array, it fails. Use the exact primitive and include it's value as valid `type`.
 * `type: ['string','null']` with `const: 'hello'` **does not** allow `null` — only `'hello'`. Similar with `enum: ['hello', null]` — `null` must be included.
 
----
-
 ## Error paths
 
 Paths are arrays of keys/indices:
@@ -190,8 +180,6 @@ validateList({ users: [{ email: 'ok@x.io' }, {}] });
 validateList({ users: [{ email: 'nope' }] });
 // { ok: false, path: ['users', 0, 'email'], message: 'Invalid email format' }
 ```
-
----
 
 ## Examples
 
@@ -223,9 +211,9 @@ const validateIntegerArray = validator({
 validateIntegerArray([1, 2]);
 // { ok: true }
 validateIntegerArray([]);
-// { ok: false, path: [], message: 'Expected at least 1 items, got 0', received: 0 }
+// { ok: false, path: [], message: 'Expected at least 1 items', received: 0 }
 validateIntegerArray([1, 2, 3, 4]);
-// { ok: false, path: [], message: 'Expected at most 3 items, got 4', received: 4 }
+// { ok: false, path: [], message: 'Expected at most 3 items', received: 4 }
 validateIntegerArray([1, 2.5]);
 // { ok: false, path: [1], message: 'Expected integer', received: 2.5 }
 ```
@@ -249,12 +237,10 @@ validateObjectOrString({ id: 2 });
 validateObjectOrString('ok');
 // { ok: true }
 validateObjectOrString('o');
-// { ok: false, path: [], message: 'String length < 2', received: 1 }
+// { ok: false, path: [], message: 'String length must be >= 2', received: 1 }
 validateObjectOrString({ id: 0 });
 // { ok: false, path: ['id'], message: 'Must be >= 1', received: 0 }
 ```
-
----
 
 ## Design choices & notes
 
@@ -262,8 +248,6 @@ validateObjectOrString({ id: 0 });
 * **Unknown formats**: treated as pass (open-world; your schema stays portable).
 * **No** `uniqueItems`, `$ref`, `oneOf`, `allOf`, `anyOf`, etc (so far, by design).
 * **Const/enum are primitives only**: object/array currently not supported.
-
----
 
 ## Contributing
 
@@ -273,5 +257,3 @@ Tests use Node’s built-in runner `node:test` and `node:assert`.
 ```bash
 npm test
 ```
-
----
