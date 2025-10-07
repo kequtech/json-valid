@@ -2,12 +2,11 @@
 
 A tiny JSON validator with a pragmatic simple subset of JSON Schema / OpenAPI 3.1 features when you don't need everything. **First error wins** (short-circuits on the first mismatch), clear error paths, and a simple API.
 
-* Many types (`object`, `array`, `string`, `number`, `integer`, `boolean`, `null`)
+* Validate `object`, `array`, `string`, `number`, `integer`, `boolean`, `null`
 * Supports **type unions** (e.g. `['string','null']`, `['object','string']`)
-* Validates **objects, arrays, strings, numbers, integers, booleans, null**
 * Common string **formats** (`uuid`, `email`, `uri`, `hostname`, `ipv4`, `ipv6`, `date-time`, `date`, `time`)
 * `additionalProperties` as **boolean** or **schema**
-* `enum`/`const` with **strict equality**
+* `enum`/`const` with strict equality
 
 ---
 
